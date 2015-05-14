@@ -1,11 +1,15 @@
 
 wget -qO- https://get.docker.com/ | sh
 
+for mac and windows boot2dock
+
 basic docker commands:
 needs sudo:
 
 docker images
 docker ps -a
+
+removing:
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 docker rmi [imagename]
@@ -14,12 +18,14 @@ adding local varaiables is important
 
 Creating image:
 
+1. The docker yarn cluster
 git clone https://github.com/lresende/docker-yarn-cluster
 sudo docker build  -t yarn-cluster .
 or 
 docker build -t lresende/docker-yarn-cluster:latest
 if the build fails
 
+The build node:
 docker run -v /Users/piotr:/mnt -i -t -p 8088:8088 -p 50070:50070 -p 50075:50075 --name namenode -h namenode yarn-cluster /etc/bootstrap.sh -bash -namenode
 docker run -v /Users/piotr:/mnt -i -t --link namenode:namenode --workdir /usr/local/hadoop yarn-cluster /etc/bootstrap.sh -bash -datanode
 
@@ -56,4 +62,23 @@ Other example:
 http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/
 
 use bin/hdfs dfs instead of bin/hadoop dfs
+
+If it fails, restart the computer to reset to dns map and ip addresses
+
+
+2. Other approach with ambari:
+
+docker pull sequenceiq/ambari:1.7.0
+curl -Lo .amb j.mp/docker-ambari-170 && . .amb
+amb-deploy-cluster 3
+
+adding own mount to ambari needs to change the ambari-functions like in ambari-fcn2 line 114 /Users/piotr is the path.
+It will add to master node, if you want to mount files to nodes you have to probably add to amb-start-node() line 141
+and then use the the 
+curl -Lo .amb file:///Users/piotr/hadoop/ambari-fcn2  && . .amb
+where Users/piotr is the path to file
+and then 
+amb-deploy-cluster 3
+
+http://blog.sequenceiq.com/blog/2014/12/04/multinode-ambari-1-7-0/
 
