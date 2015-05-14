@@ -64,7 +64,7 @@ http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-pyt
 use bin/hdfs dfs instead of bin/hadoop dfs
 
 If it fails, restart the computer to reset to dns map and ip addresses
-
+or clean all containers - the repo should be clean
 
 2. Other approach with ambari:
 
