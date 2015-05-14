@@ -10,24 +10,33 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 docker rmi [imagename]
 
+adding local varaiables is important
 
 Creating image:
 
 git clone https://github.com/lresende/docker-yarn-cluster
 sudo docker build  -t yarn-cluster .
+or 
+docker build -t lresende/docker-yarn-cluster:latest
+if the build fails
 
 docker run -v /Users/piotr:/mnt -i -t -p 8088:8088 -p 50070:50070 -p 50075:50075 --name namenode -h namenode yarn-cluster /etc/bootstrap.sh -bash -namenode
 docker run -v /Users/piotr:/mnt -i -t --link namenode:namenode --workdir /usr/local/hadoop yarn-cluster /etc/bootstrap.sh -bash -datanode
+
+or if running from pulled 
+docker run -v /Users/piotr:/mnt -i -t -p 8088:8088 -p 50070:50070 -p 50075:50075 --name namenode -h namenode lresende/docker-yarn-cluster /etc/bootstrap.sh -bash -namenode
+docker run -v /Users/piotr:/mnt -i -t --link namenode:namenode --workdir /usr/local/hadoopl lresende/docker-yarn-cluster /etc/bootstrap.sh -bash -datanode
+
 
 for mac:
 boot2docker init
 boot2docker start
 sudo route add -net 172.17.0.0/16 192.168.59.103
 
+
 checking ip:
 docker inspect --format='{{.NetworkSettings.IPAddress}}' namenode
 port number 50070
-
 
 
 testing:
@@ -43,5 +52,8 @@ bin/hadoop jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.0.jar grep i
 # check the output
 bin/hdfs dfs -cat output/*
 
+Other example:
+http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/
 
+use bin/hdfs dfs instead of bin/hadoop dfs
 
